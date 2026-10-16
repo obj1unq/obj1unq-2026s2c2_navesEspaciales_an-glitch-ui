@@ -1,9 +1,24 @@
 import naves.*
 
-describe "Nave de carga" {
+/*
+Una nave de pasajeros que viaja a 290.000 kms/seg al prepararse para viajar queda con velocidad de 300.000 kms/seg.
+Una nave de residuos radiactivos sin velocidad y que no está sellada al prepararse para viajar queda con velocidad de 
+	15.000 kms/seg y sellada al vacío.
+Una nave de combate en modo ataque sin velocidad al prepararse para viajar emite el mensaje "Volviendo a la base" y queda con
+	velocidad de 15.000 kms/seg
+Una nave de combate en modo reposo sin velocidad al prepararse para viajar emite el mensaje "Saliendo en misión", queda en modo
+	ataque y con velocidad de 15.000 kms/seg
+*/
 
+describe "Nave de carga" {
 	const naveVacia = new NaveDeCarga()
 	const naveLlena = new NaveDeCarga(carga = 500000, velocidad = 290000)
+	const naveSinVel = new NaveDeCarga(carga = 500000)
+
+	test "propulsar sin velocidad" {
+		naveSinVel.propulsar()
+		assert.equals(20000, naveSinVel.velocidad())
+	}
 
 	test "sobrecargada" {
 		assert.that(naveLlena.sobrecargada())
@@ -40,9 +55,18 @@ describe "Nave de carga" {
 }
 
 describe "Nave de pasajeros" {
-
 	const naveSinPasajeros = new NaveDePasajeros()
 	const naveConPasajeros = new NaveDePasajeros(cantidadDePasajeros = 296, velocidad = 290000)
+
+
+	test "description" {
+		
+	}
+
+	test "propulsar quedando en velocidad 300.000" {
+		naveConPasajeros.propulsar()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
 
 	test "velocidad maxima sin pasajeros" {
 		assert.equals(75000, naveSinPasajeros.velocidadMaximaPermitida())
@@ -94,4 +118,16 @@ describe "Nave de combate" {
 		naveEnAtaque.recibirAmenaza()
 		assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
 	}
+}
+
+describe "Nave de carga radioactiva" {
+  	test "recibir amenaza" {
+		const naveSinVel = new NaveDeCargaRadioactiva(carga = 5000, velocidad = 10000)
+		const cargaNaveSinLev = naveSinVel.carga()
+
+
+		naveSinVel.recibirAmenaza()
+		assert.equals(0, naveSinVel.velocidad())
+		assert.equals(cargaNaveSinLev, naveSinVel.carga())
+    }
 }
