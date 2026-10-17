@@ -11,15 +11,16 @@ class Nave {
 	method prepararViaje() {
 		velocidad = (300000).min(velocidad+15000)
 	}
+
+	method encontrarseConEnemigo() {
+		self.recibirAmenaza()
+		self.propulsar()
+	}
 }
 
 
 
-/*
-las naves que cargan residuos radioactivos se cierran al vacío.
-y las de combate, si se encuentran en modo ataque, emiten el mensaje "Volviendo a la base", mientras que si están en reposo 
-emiten el mensaje "Saliendo en misión" y se ponen en modo ataque
-*/
+
 class NaveDeCargaRadioactiva inherits NaveDeCarga {
 	override method recibirAmenaza(){
 		velocidad = 0
@@ -30,7 +31,6 @@ class NaveDeCargaRadioactiva inherits NaveDeCarga {
 		self.recibirAmenaza()
 	}
 }
-
 
 class NaveDeCarga inherits Nave {
 	//var property velocidad = 0
@@ -90,6 +90,7 @@ class NaveDeCombate inherits Nave {
 	}
 
 	override method prepararViaje() {
+		super()
 		modo.mandarSMS(self)
 	}
 }
@@ -103,7 +104,8 @@ object reposo {
 	}
 
 	method mandarSMS(nave){
-		nave.emitirMensaje("Saliendo en misiòn")
+		nave.emitirMensaje("Saliendo en misión")
+		nave.modo(ataque)
 	} 
 }
 
@@ -121,5 +123,3 @@ object ataque {
 }
 
 // <<<<<<<<<<<<<<<<  >>>>>>>>>>>>>>>>>>
-
-

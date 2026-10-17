@@ -1,13 +1,8 @@
 import naves.*
 
 /*
-Una nave de pasajeros que viaja a 290.000 kms/seg al prepararse para viajar queda con velocidad de 300.000 kms/seg.
-Una nave de residuos radiactivos sin velocidad y que no está sellada al prepararse para viajar queda con velocidad de 
-	15.000 kms/seg y sellada al vacío.
-Una nave de combate en modo ataque sin velocidad al prepararse para viajar emite el mensaje "Volviendo a la base" y queda con
-	velocidad de 15.000 kms/seg
-Una nave de combate en modo reposo sin velocidad al prepararse para viajar emite el mensaje "Saliendo en misión", queda en modo
-	ataque y con velocidad de 15.000 kms/seg
+Testear que una nave de pasajeros sin velocidad al encontrarse con un enemigo queda con velocidad de 20.000 kms/seg y su alarma en caso de 
+emergencia activada.
 */
 
 describe "Nave de carga" {
@@ -59,8 +54,15 @@ describe "Nave de pasajeros" {
 	const naveConPasajeros = new NaveDePasajeros(cantidadDePasajeros = 296, velocidad = 290000)
 
 
-	test "description" {
-		
+	test "pasajeros sin vel encontrandose con enemigo" {
+		naveSinPasajeros.encontrarseConEnemigo()
+		assert.equals(20000, naveSinPasajeros.velocidad())
+		assert.that(naveSinPasajeros.alarma())
+	}
+
+	test "pasajeros con vel de 300000" {
+		naveConPasajeros.prepararViaje()
+		assert.equals(300000, naveConPasajeros.velocidad())
 	}
 
 	test "propulsar quedando en velocidad 300.000" {
@@ -92,9 +94,22 @@ describe "Nave de pasajeros" {
 }
 
 describe "Nave de combate" {
-
 	const naveEnReposo = new NaveDeCombate()
 	const naveEnAtaque = new NaveDeCombate(modo = ataque)
+
+
+	test "nave ataque mode sin vel preparando viaje" {
+		naveEnAtaque.prepararViaje()
+		assert.equals("Volviendo a la base", naveEnAtaque.ultimoMensaje())
+		assert.equals(15000, naveEnAtaque.velocidad())
+	}
+
+	test "nave reposo sin vel preparando viaje" {
+		naveEnReposo.prepararViaje()
+		assert.equals("Saliendo en misión", naveEnReposo.ultimoMensaje())
+		assert.equals(ataque, naveEnReposo.modo())
+		assert.equals(15000, naveEnReposo.velocidad())
+	}
 
 	test "no esta invisible en reposo" {
 		assert.notThat(naveEnReposo.estaInvisible())
@@ -121,13 +136,18 @@ describe "Nave de combate" {
 }
 
 describe "Nave de carga radioactiva" {
+	const naveSinVel = new NaveDeCargaRadioactiva(carga = 5000, velocidad = 10000)
+	const cargaNaveSinLev = naveSinVel.carga()
+
   	test "recibir amenaza" {
-		const naveSinVel = new NaveDeCargaRadioactiva(carga = 5000, velocidad = 10000)
-		const cargaNaveSinLev = naveSinVel.carga()
-
-
 		naveSinVel.recibirAmenaza()
 		assert.equals(0, naveSinVel.velocidad())
 		assert.equals(cargaNaveSinLev, naveSinVel.carga())
     }
+
+	test "vel 15000 sellada al vacio" {
+		naveSinVel.prepararViaje()
+		assert.equals(0, naveSinVel.carga())
+		assert.equals(15000, naveSinVel.velocidad())
+	}
 }
