@@ -95,31 +95,57 @@ class NaveDeCombate inherits Nave {
 	}
 }
 
-object reposo {
 
+class Modo{
 	method invisible() = false
 
 	method recibirAmenaza(nave) {
-		nave.emitirMensaje("¡RETIRADA!")
+	  nave.emitirMensaje(self.mensajePorRecibirAmenaza())
 	}
 
-	method mandarSMS(nave){
-		nave.emitirMensaje("Saliendo en misión")
-		nave.modo(ataque)
-	} 
+	method mandarSMS(nave) {		
+		nave.emitirMensaje(self.mensajePorPrepararViaje())
+	}
+
+	method mensajePorRecibirAmenaza()
+
+	method mensajePorPrepararViaje()
 }
 
-object ataque {
 
-	method invisible() = true
 
-	method recibirAmenaza(nave) {
-		nave.emitirMensaje("Enemigo encontrado")
+
+
+
+object reposo inherits Modo {
+	//method recibirAmenaza(nave) {
+	//	nave.emitirMensaje("¡RETIRADA!")
+	//}
+
+	override method mandarSMS(nave){
+		super(nave)
+		nave.modo(ataque)
 	}
 
-	method mandarSMS(nave){
-		nave.emitirMensaje("Volviendo a la base")
-	}
+	override method mensajePorRecibirAmenaza() = "¡RETIRADA!" 
+
+	override method mensajePorPrepararViaje() = "Saliendo en misión"
+}
+
+object ataque inherits Modo {
+	override method invisible() = true
+
+	//method recibirAmenaza(nave) {
+	//	nave.emitirMensaje("Enemigo encontrado")
+	//}
+
+	//method mandarSMS(nave){
+	//	nave.emitirMensaje("Volviendo a la base")
+	//}
+
+	override method mensajePorRecibirAmenaza() = "Enemigo encontrado" 
+
+	override method mensajePorPrepararViaje() = "Volviendo a la base"
 }
 
 // <<<<<<<<<<<<<<<<  >>>>>>>>>>>>>>>>>>

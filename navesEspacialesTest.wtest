@@ -136,7 +136,7 @@ describe "Nave de combate" {
 }
 
 describe "Nave de carga radioactiva" {
-	const naveSinVel = new NaveDeCargaRadioactiva(carga = 5000, velocidad = 10000)
+	const naveSinVel = new NaveDeCargaRadioactiva(carga = 5000)
 	const cargaNaveSinLev = naveSinVel.carga()
 
   	test "recibir amenaza" {
@@ -145,9 +145,11 @@ describe "Nave de carga radioactiva" {
 		assert.equals(cargaNaveSinLev, naveSinVel.carga())
     }
 
-	test "vel 15000 sellada al vacio" {
+	test "vel 15000 sellada al vacio" {   
+		// Una nave de residuos radiactivos sin velocidad y que no está sellada al prepararse para viajar queda con velocidad de 
+		// 15.000 kms/seg y sellada al vacío.
 		naveSinVel.prepararViaje()
-		assert.equals(0, naveSinVel.carga())
+		assert.equals(5000, naveSinVel.carga())
 		assert.equals(15000, naveSinVel.velocidad())
 	}
 }
